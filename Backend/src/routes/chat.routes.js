@@ -4,7 +4,7 @@ const { userAuth } = require('../middlewares/authMiddleware/userAuth.middleware'
 
 const chatRouter = express.Router();
 
-chatRouter.post('/chat', userAuth, createChat)
+chatRouter.post('/create-chat', userAuth, createChat)
 
 
 

@@ -1,6 +1,6 @@
 const chatModel = require("../models/chat.models");
 
-async function createChat() {
+async function createChat(req, res) {
     try {
         const { title } = req.body;
         const user = req.user
@@ -10,6 +10,7 @@ async function createChat() {
             title: title
         })
 
+        
         return res.status(201).json({
             message: "chat created",
             chat: chat,

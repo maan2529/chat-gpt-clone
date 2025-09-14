@@ -1,0 +1,27 @@
+user ->(have multiple) chats-> (have multiple) messages
+
+for short term memory 
+
+from frontend message format
+{
+    "role":"user/model",
+    "text":"your text" 
+}
+
+
+
+
+##Steps##
+
+take this data and save to database 
+
+use find to fetch data from databasse 
+
+use map on that data to structure the  format of fateched data  (to avoid format error)
+
+give this data to ai 
+
+send response to frontend via callback function
+
+after sending save response in data at one time 
+

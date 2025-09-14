@@ -1,7 +1,8 @@
 const { Server } = require('socket.io')
 const jwt = require('jsonwebtoken')
 const cookie = require("cookie");
-const { getAIResponse } = require("../services/ai.service")
+const { getAIResponse } = require("../services/ai.service");
+const Message = require('../models/message.model');
 function initSocket(httpServer) {
 
     const io = new Server(httpServer)
@@ -9,7 +10,6 @@ function initSocket(httpServer) {
     // adding authentication so only authenticated use can send message 
 
     io.use((socket, next) => {
-
 
         const cookies = socket.handshake?.headers?.cookie; // in string format
 
@@ -33,10 +33,26 @@ function initSocket(httpServer) {
 
         socket.on('ai-message', async (message) => {
             try {
-                await getAIResponse(message, (chunksText) => {
+                // store user message in db
+                await Message.create({
+                    chat: message?.chatId,
+                    user: socket?.user?.id,
+                    role: "user",
+                    text: message?.text,
+                });
+                // no need to give message but still giving for testing purpose
 
+                const aiResponse = await getAIResponse(message, (chunksText) => {
                     socket.emit("ai-response", chunksText)
                 })
+                console.log('aiResponse', aiResponse)
+
+                await Message.create({
+                    chat: message?.chatId,
+                    user: socket?.user?.id,
+                    role: "model",
+                    text: aiResponse,
+                });
 
 
             } catch (error) {

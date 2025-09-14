@@ -80,7 +80,8 @@ async function loginUser(req, res) {
         role: user.role
     }, process.env.JWT_SECRET)
 
-
+    const redisUser = await redis.setex(`user:${user._id}`, 6000, JSON.stringify(user));
+    console.log("redisUser from login", redisUser, user._id)
     res.cookie("token", token)
 
 
@@ -103,7 +104,7 @@ async function logout(req, res) {
     const token = req.cookies.token
 
     if (token) {
-        await redis.set(`blacklist:${token}`, "true", "EX", 60 * 60 * 24)
+        await redis.set(`blacklist:${token}`, token, "true", "EX", 60 * 60 * 24)
     }
 
     res.clearCookie("token")
