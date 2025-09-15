@@ -9,24 +9,29 @@
 
 
 .sidebar::-webkit-scrollbar {
-    width: 6px;
+    width: 2px;
 }
 
 .sidebar::-webkit-scrollbar-track {
-    background: #111827;
+    background: transparent;
+
 }
 
 .sidebar::-webkit-scrollbar-thumb {
     background: #374151;
+
     border-radius: 9999px;
+
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
     background: #4b5563;
+
 }
 
-/* Works in Firefox */
+
 .sidebar {
-    scrollbar-width: thin;
-    scrollbar-color: #374151 #111827;
+    scrollbar-width: auto;
+    scrollbar-color: #374151 transparent;
+    /* thumb color, transparent track */
 }

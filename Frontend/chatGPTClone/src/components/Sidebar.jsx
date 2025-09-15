@@ -10,13 +10,12 @@ import {
 const Sidebar = ({ isOpen, setIsOpen }) => {
     return (
         <div
-            className={`fixed top-0 left-0 h-screen bg-[#181818] text-gray-200 transition-all duration-300 flex flex-col border-r border-gray-700 z-10  ${isOpen ? " w-[260px]" : "w-0 sm:w-[60px]"}`}
+            className={`fixed top-0 left-0 h-screen bg-[#181818] text-gray-200 transition-all duration-300 flex flex-col  border-r border-gray-700 z-10  ${isOpen ? " w-[260px]" : " w-0 sm:w-[60px]"}`}
         >
             {/* Toggle Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="absolute top-4 right-[-14px] bg-[#242929f2] hover:bg-gray-600 
-        p-1.5 rounded-full shadow-md transition"
+                className="absolute top-4 right-[-14px] bg-[#242929f2] hover:bg-gray-600 p-1.5 rounded-full shadow-md transition"
             >
                 {isOpen ? <ChevronLeft size={18} /> : <ChevronRight className="hidden sm:block" size={18} />}
             </button>
@@ -42,7 +41,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
                 {/* Chat History Items */}
                 <div className="space-y-1">
-                    {Array.from({ length: 2 }).map((_, i) => (
+                    {Array.from({ length: 22 }).map((_, i) => (
                         <button
                             key={i}
                             className="flex items-center gap-3 w-full hover:bg-[#282a2b] p-2 rounded-md cursor-pointer text-sm text-gray-300 hover:text-white "
@@ -55,7 +54,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             </nav>
 
             {/* Footer (Profile Section) */}
-            <div className="p-3 border-t border-gray-700">
+            <div className="p-3 w-full border-t border-gray-700">
                 {isOpen ? (
                     <div className="flex items-center gap-3">
                         {/* Profile Image */}
@@ -67,7 +66,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
                         {/* Name + Account Type */}
                         <div>
-                            <p className="text-sm font-medium">Hemant Singh</p>
+                            <p className="text-sm font-medium">Maan</p>
                             <p className="text-xs text-gray-400">Free Plan</p>
                             {/* If premium: <p className="text-xs text-yellow-400">Premium</p> */}
                         </div>
