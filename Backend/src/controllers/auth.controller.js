@@ -50,7 +50,7 @@ async function registerUser(req, res) {
             role: user.role
         }
     })
-
+    return
 }
 
 async function loginUser(req, res) {
@@ -81,7 +81,7 @@ async function loginUser(req, res) {
     }, process.env.JWT_SECRET)
 
     const redisUser = await redis.setex(`user:${user._id}`, 6000, JSON.stringify(user));
-    console.log("redisUser from login", redisUser, user._id)
+    // console.log("redisUser from login", redisUser, user._id)
     res.cookie("token", token)
 
 
@@ -96,7 +96,7 @@ async function loginUser(req, res) {
         }
     })
 
-
+    return
 }
 
 async function logout(req, res) {
@@ -112,6 +112,7 @@ async function logout(req, res) {
     res.status(200).json({
         message: "User logged out successfully"
     })
+    return
 
 }
 

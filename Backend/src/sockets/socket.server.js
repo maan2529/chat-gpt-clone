@@ -3,9 +3,16 @@ const jwt = require('jsonwebtoken')
 const cookie = require("cookie");
 const { getAIResponse } = require("../services/ai.service");
 const Message = require('../models/message.model');
+const { v4: uuidv4 } = require('uuid');
 function initSocket(httpServer) {
 
-    const io = new Server(httpServer)
+    const io = new Server(httpServer, {
+        cors: {
+            origin: "http://localhost:5173",
+            methods: ["GET", "POST"],
+            credentials: true
+        }
+    })
 
     // adding authentication so only authenticated use can send message 
 
@@ -41,11 +48,12 @@ function initSocket(httpServer) {
                     text: message?.text,
                 });
                 // no need to give message but still giving for testing purpose
-
+                const messageId = uuidv4();
                 const aiResponse = await getAIResponse(message, (chunksText) => {
-                    socket.emit("ai-response", chunksText)
+
+                    socket.emit("ai-response", { messageId, chunksText })
                 })
-                console.log('aiResponse', aiResponse)
+                // console.log('aiResponse', aiResponse)
 
                 await Message.create({
                     chat: message?.chatId,
@@ -56,6 +64,7 @@ function initSocket(httpServer) {
 
 
             } catch (error) {
+                console.log(error)
                 socket.emit("ai-response", { error: "Something went wrong" })
             }
 

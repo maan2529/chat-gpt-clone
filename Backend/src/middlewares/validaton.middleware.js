@@ -52,13 +52,17 @@ const loginUserValidation = [
     validateResults
 ]
 
-const createChatValidation = () => {
+const createChatValidation = [
     body("title")
         .isString()
-        .withMessage("must be string")
-}
+        .withMessage("must be a string"),
+
+    validateResults
+
+]
 
 module.exports = {
     registerUserValidation,
-    loginUserValidation
+    loginUserValidation,
+    createChatValidation
 }

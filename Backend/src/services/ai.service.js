@@ -30,7 +30,7 @@ async function getAIResponse(messages, cb) {
         model: "gemini-2.0-flash",
         contents: contents,
         config: {
-            systemInstruction: "Always respond in plain text only. Do not use markdown, bullet points, or code blocks. Keep the response concise and under 200 words.",
+            systemInstruction: "Always respond in markdown only.",
         },
 
     })
@@ -39,6 +39,7 @@ async function getAIResponse(messages, cb) {
 
     // console.log("response", response)
     for await (const chunks of response) {
+        console.log(chunks.text)
         cb(chunks.text)
         text += chunks.text
     }
