@@ -19,8 +19,6 @@ async function getAllChatById(req, res) {
             .sort({ createdAt: 1 })
             .select({ _id: 1, role: 1, text: 1 }); // old to new
         
-        console.log({ allMessages })
-
         return res.status(200).json({
             data: allMessages,
             success: true,

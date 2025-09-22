@@ -39,7 +39,6 @@ async function getAIResponse(messages, cb) {
 
     // console.log("response", response)
     for await (const chunks of response) {
-        console.log(chunks.text)
         cb(chunks.text)
         text += chunks.text
     }

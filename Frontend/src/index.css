@@ -35,3 +35,14 @@
     scrollbar-color: #374151 transparent;
     /* thumb color, transparent track */
 }
+
+
+.prose p {
+    @apply mb-4;
+    /* gap between lines */
+}
+
+.prose p+p {
+    @apply mt-6;
+    /* bigger gap between paragraphs */
+}

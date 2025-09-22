@@ -1,7 +1,6 @@
 const chatModel = require("../models/chat.models");
 
 async function createChat(req, res) {
-    console.log("create chat called")
     try {
         const { title } = req.body;
         const user = req.user

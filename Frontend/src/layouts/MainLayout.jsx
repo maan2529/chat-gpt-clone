@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import HomePage from "../pages/HomePage";
 import { Outlet } from "react-router";
 import { ChevronRight } from "lucide-react";
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { useGetTitle } from "../hooks/titleHooks/titleHook";
+
 
 const MainLayout = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
+
+    const { data, error, isFetching } = useGetTitle();
+
 
     return (
         <div className="h-[100%] flex  text-white ">
             {/* Sidebar */}
-            <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+            <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} error={error} isLoading={isFetching} />
 
 
             {/* mobile toggle button (afterwords make a component for this)*/}
@@ -29,7 +36,7 @@ const MainLayout = () => {
                 ${isOpen ? "sm:ml-[260px]" : "sm:ml-[60px]"}  h-screen`}
             >
                 <Outlet context={{ isOpen, setIsOpen }} />
-                {/* <HomePage isOpen={isOpen} setIsOpen={setIsOpen} /> */}
+               
             </div>
         </div>
     );
