@@ -7,6 +7,7 @@ import { useRegister } from '../hooks/auth/authHook';
 const LoginSignup = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [isLoading, setIsLoading] = useState(false);
+    
     const { mutate, error, isSuccess } = useRegister();
     const navigate = useNavigate()
 

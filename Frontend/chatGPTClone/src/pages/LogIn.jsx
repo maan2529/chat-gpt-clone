@@ -10,7 +10,8 @@ const LogIn = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { mutate, isPending, error, success } = useLogin()
     const navigate = useNavigate()
-
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(false);
 
     const onSubmit = async (data) => {
 
@@ -21,10 +22,12 @@ const LogIn = () => {
         mutate(data, {
             onSuccess: (data) => {
                 console.log(data)
+                setSuccessMessage(true);
                 navigate('/home')
             },
             onError: (error) => {
                 console.log(error)
+                setErrorMessage(error.response.data.message);
             }
 
         })
@@ -35,9 +38,7 @@ const LogIn = () => {
         }, 2000);
     };
 
-    if (error) {
-        <div>{error.message}</div>
-    }
+
 
     return (
         <div className="max-w-sm sm:max-w-md w-full space-y-3 sm:space-y-4">
@@ -48,8 +49,13 @@ const LogIn = () => {
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Welcome back</h1>
                 <p className="text-gray-400 text-base sm:text-lg">Sign in to your account</p>
-                {error && <div className='text-orange-500 font-lite mt-2'>{error.response.data.message}</div>}
-                {success && <div className='text-green-400 font-semibold '>User Created Success</div>}
+                {/* Display error message if exists */}
+                {errorMessage && (
+                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                        {errorMessage}
+                    </div>
+                )}
+                {successMessage && <div className='text-green-400 font-semibold '>User Created Success</div>}
             </div>
 
             {/* Login Form */}

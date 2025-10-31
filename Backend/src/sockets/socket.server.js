@@ -8,7 +8,7 @@ function initSocket(httpServer) {
 
     const io = new Server(httpServer, {
         cors: {
-            origin: "http://localhost:5173",
+            origin: "*",
             methods: ["GET", "POST"],
             credentials: true
         }
@@ -35,6 +35,7 @@ function initSocket(httpServer) {
             return next(new Error("not Authenticated"))
         }
     })
+
     io.on('connection', (socket) => {
 
 
@@ -50,7 +51,7 @@ function initSocket(httpServer) {
                 // no need to give message but still giving for testing purpose
                 const messageId = uuidv4();
                 const aiResponse = await getAIResponse(message, (chunksText) => {
-
+                    
                     socket.emit("ai-response", { messageId, chunksText })
                 })
                 // console.log('aiResponse', aiResponse)
