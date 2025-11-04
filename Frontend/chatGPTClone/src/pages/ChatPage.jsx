@@ -6,7 +6,7 @@ import socket from '../socketServer/socketServer';
 import { useSelector, useDispatch } from 'react-redux'
 import { addMessages, removeMessages, setAllMessages, streamMessage, setLoading } from '../store/feature/message/messageSlice';
 import useGetAllChats from '../hooks/message/messageHook';
-import InputBox from '../components/inputBox';
+import InputBox from '../components/InputBox';
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
