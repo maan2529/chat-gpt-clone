@@ -1,6 +1,6 @@
 
 import { useNavigate, useOutletContext } from 'react-router';
-import InputBox from '../components/inputBox';
+import InputBox from '../components/InputBox';
 import { useSelector, useDispatch } from 'react-redux'
 import { addMessages } from '../store/feature/message/messageSlice';
 import socket from '../socketServer/socketServer';
