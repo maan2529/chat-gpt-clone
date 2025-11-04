@@ -8,4 +8,6 @@ const socket = io(backendUrl, {
     withCredentials: true,     // needed if using CORS with credential
 });
 
+
+
 export default socket;

@@ -1,4 +1,4 @@
-import { BrainCircuit } from 'lucide-react';
+import { BrainCircuit, Eye, EyeOff } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
@@ -7,6 +7,7 @@ import { useRegister } from '../hooks/auth/authHook';
 const LoginSignup = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     
     const { mutate, error, isSuccess } = useRegister();
     const navigate = useNavigate()
@@ -115,7 +116,7 @@ const LoginSignup = () => {
                 </div>
 
                 {/* Password Field */}
-                <div>
+                <div className="relative">
 
                     <input
                         {...register('password', {
@@ -125,11 +126,18 @@ const LoginSignup = () => {
                                 message: 'Password must be at least 8 characters'
                             }
                         })}
-                        type="password"
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 text-sm sm:text-base text-white placeholder-gray-400 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        type={showPassword ? "text" : "password"}
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 pr-10 text-sm sm:text-base text-white placeholder-gray-400 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                         style={{ backgroundColor: '#030303' }}
                         placeholder="Enter your password"
                     />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
+                    >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                     {errors.password && (
                         <p className="mt-2 text-sm text-red-400">{errors.password.message}</p>
                     )}

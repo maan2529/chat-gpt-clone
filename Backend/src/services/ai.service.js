@@ -7,17 +7,11 @@ const ai = new GoogleGenAI({
 
 //basic level of add short term memory to ai , but not right way to do it 
 // const contents = [
-// ];
-// console.log(contents)
+// ]; 
 
 async function getAIResponse(messages, cb) {
-    // contents.push({
-    //     role: 'user',
-    //     parts: [{
-    //         text: messages
-    //     }]
-    // })
-    const contents = (await Message.find()).map(msg => (
+    // Fetch only messages from the specific chat to avoid memory leak and data exposure
+    const contents = (await Message.find({ chat: messages.chatId }).sort({ createdAt: 1 })).map(msg => (
         {
             role: msg.role,
             parts: [{
@@ -37,21 +31,11 @@ async function getAIResponse(messages, cb) {
 
     let text = '';
 
-    // console.log("response", response)
     for await (const chunks of response) {
         cb(chunks.text)
         text += chunks.text
     }
 
-
-    // contents.push({
-    //     role: 'model',
-    //     parts: [{
-    //         text,
-    //     }]
-    // })
-
-    // console.log(response.text)
     return text;
 }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { BrainCircuit } from 'lucide-react';
+import { BrainCircuit, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { useLogin } from '../hooks/auth/authHook';
 
@@ -12,6 +12,7 @@ const LogIn = () => {
     const navigate = useNavigate()
     const [errorMessage, setErrorMessage] = useState(null);
     const [successMessage, setSuccessMessage] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const onSubmit = async (data) => {
 
@@ -21,7 +22,8 @@ const LogIn = () => {
 
         mutate(data, {
             onSuccess: (data) => {
-                console.log(data)
+                console.log(data);
+                setErrorMessage(false)
                 setSuccessMessage(true);
                 navigate('/home')
             },
@@ -44,14 +46,14 @@ const LogIn = () => {
         <div className="max-w-sm sm:max-w-md w-full space-y-3 sm:space-y-4">
             {/* Logo and Header */}
             <div className="text-center">
-                <div className="mx-auto h-10 w-10 sm:h-12 sm:w-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4 sm:mb-4">
+                <div className="mx-auto h-10 w-10 sm:h-12 sm:w-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4 sm:mb-4 ">
                     <span className="text-white font-bold text-xl sm:text-xl"><BrainCircuit /></span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Welcome back</h1>
                 <p className="text-gray-400 text-base sm:text-lg">Sign in to your account</p>
                 {/* Display error message if exists */}
                 {errorMessage && (
-                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded my-4">
                         {errorMessage}
                     </div>
                 )}
@@ -88,19 +90,31 @@ const LogIn = () => {
                     <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
                         Password
                     </label>
-                    <input
-                        {...register('password', {
-                            required: 'Password is required',
-                            minLength: {
-                                value: 8,
-                                message: 'Password must be at least 8 characters'
-                            }
-                        })}
-                        type="password"
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 text-sm sm:text-base text-white placeholder-gray-400 border border-gray-600 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                        style={{ backgroundColor: '#030303' }}
-                        placeholder="Enter your password"
-                    />
+                    <div className="relative">
+                        <input
+                            {...register('password', {
+                                required: 'Password is required',
+                                minLength: {
+                                    value: 8,
+                                    message: 'Password must be at least 8 characters'
+                                }
+                            })}
+                            type={showPassword ? "text" : "password"}
+                            className="w-full px-3 sm:px-4 py-3 sm:py-4 pr-10 text-sm sm:text-base text-white placeholder-gray-400 border border-gray-600 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            style={{ backgroundColor: '#030303' }}
+                            placeholder="Enter your password"
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
+                        >
+
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                    </div>
+
                     {errors.password && (
                         <p className="mt-2 text-sm text-red-400">{errors.password.message}</p>
                     )}

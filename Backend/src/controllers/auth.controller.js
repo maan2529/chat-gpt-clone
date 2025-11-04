@@ -35,8 +35,7 @@ async function registerUser(req, res) {
     const token = jwt.sign({
         id: user._id,
         role: user.role
-    }, process.env.JWT_SECRET)
-
+    }, process.env.JWT_SECRET, { expiresIn: '7d' })
 
     res.cookie("token", token)
 
@@ -78,10 +77,9 @@ async function loginUser(req, res) {
     const token = jwt.sign({
         id: user._id,
         role: user.role
-    }, process.env.JWT_SECRET)
+    }, process.env.JWT_SECRET, { expiresIn: '7d' })
 
     const redisUser = await redis.setex(`user:${user._id}`, 6000, JSON.stringify(user));
-    // console.log("redisUser from login", redisUser, user._id)
     res.cookie("token", token)
 
 
@@ -100,20 +98,28 @@ async function loginUser(req, res) {
 }
 
 async function logout(req, res) {
+    try {
+        const token = req.cookies.token
 
-    const token = req.cookies.token
+        if (token) {
+            await redis.setex(`blacklist:${token}`, 60 * 60 * 24, "true")
+        }
 
-    if (token) {
-        await redis.set(`blacklist:${token}`, token, "true", "EX", 60 * 60 * 24)
+        if (req.user?._id) {
+            await redis.del(`user:${req.user._id}`)
+        }
+
+        res.clearCookie("token")
+
+        res.status(200).json({
+            message: "User logged out successfully"
+        })
+    } catch (error) {
+        console.error("Logout error:", error)
+        res.status(500).json({
+            message: "Failed to logout"
+        })
     }
-
-    res.clearCookie("token")
-
-    res.status(200).json({
-        message: "User logged out successfully"
-    })
-    return
-
 }
 
 module.exports = {

@@ -1,12 +1,9 @@
-import { ChevronRight } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+
 import { useNavigate, useOutletContext } from 'react-router';
 import InputBox from '../components/inputBox';
 import { useSelector, useDispatch } from 'react-redux'
 import { addMessages } from '../store/feature/message/messageSlice';
 import socket from '../socketServer/socketServer';
-
-import axios from 'axios';
 import { useCreateChat } from '../hooks/titleHooks/titleHook';
 
 
@@ -15,32 +12,36 @@ const HomePage = () => {
     const { mutate, error, isLoading } = useCreateChat()
 
     const navigate = useNavigate()
-    const [title, setTitle] = useState(null)
+
 
     const handleOnSubmit = async (data) => {
-
         console.log(data)
         try {
+            // Ensure socket is connected
+            if (!socket.connected) {
+                await new Promise((resolve) => {
+                    socket.once('connect', resolve);
+                    socket.connect();
+                });
+            }
+
             const firstMsg = {
-                _id: Date.now(),
+                _id: Date.now().toString(), // Use string for consistency
                 role: "user",
                 text: data.userText,
             };
 
             dispatch(addMessages(firstMsg));
 
-            mutate(data.userText, {
+            mutate(data?.userText, {
                 onSuccess: (chat) => {
                     console.log(chat)
-
-                    navigate(`/home/chat/${chat.chat._id}`, {
-                        state: { data: firstMsg }
-                    })
-                    socket.emit("ai-message", {
-                        chatId: chat.chat._id,
-                        text: data.userText,
-                    });
-
+                    // Small delay to ensure backend is ready
+                    setTimeout(() => {
+                        navigate(`/home/chat/${chat.chat._id}`, {
+                            state: { data: firstMsg }
+                        })
+                    }, 100);
                 }
             })
 
@@ -67,10 +68,13 @@ const HomePage = () => {
 
 
             {/* Input Area */}
-            <div
-                className="w-full p-6 fixed bottom-2 left-0  md:static md:flex md:justify-center"
-            >
-                <InputBox handleOnSubmit={handleOnSubmit} />
+            <div className="w-full px-4 py-6 sm:px-6 fixed bottom-2 left-0 md:static">
+                <div className="mx-auto max-w-[48rem]">
+                    <InputBox
+                        handleOnSubmit={handleOnSubmit}
+                        containerClassName="max-w-full"
+                    />
+                </div>
             </div>
 
         </div>

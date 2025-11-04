@@ -5,48 +5,50 @@ async function createChat(req, res) {
         const { title } = req.body;
         const user = req.user
 
+        if (!title) {
+            return res.status(400).json({
+                message: "Title is required"
+            })
+        }
+
         const chat = await chatModel.create({
             user: user._id,
             title: title
         })
 
-
         return res.status(201).json({
-            message: "chat created",
+            message: "Chat created successfully",
             chat: chat,
         })
 
-
     } catch (error) {
-        res.status(401).json({
-            message: "chat not created"
+        console.error("Error creating chat:", error);
+        return res.status(500).json({
+            message: "Failed to create chat",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         })
-        throw Error("Error while creating chat" + error)
     }
 }
 async function getChats(req, res) {
     try {
-
         const user = req.user
 
         const chat = await chatModel.find({
             user: user._id
-        })
-
-        
+        }).sort({ createdAt: -1 })
 
         return res.status(200).json({
-            message: "chat fetched",
+            message: "Chats fetched successfully",
             success: true,
             chat: chat,
         })
 
-
     } catch (error) {
-        res.status(401).json({
-            message: "erros in getting chats"
+        console.error("Error fetching chats:", error);
+        return res.status(500).json({
+            message: "Failed to fetch chats",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         })
-        throw Error("Error while creating chat" + error)
     }
 }
 

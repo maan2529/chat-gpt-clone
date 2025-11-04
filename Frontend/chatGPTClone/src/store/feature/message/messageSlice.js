@@ -27,11 +27,9 @@ const messageSlice = createSlice({
             const existingMsgIndex = state.messages.findIndex(msg => msg._id === _id);
 
             if (existingMsgIndex !== -1) {
-                // Update existing message
                 const currentText = state.messages[existingMsgIndex].text || "";
-                state.messages[existingMsgIndex].text = currentText + " " + chunk;
+                state.messages[existingMsgIndex].text = `${currentText}${chunk}`;
             } else {
-                // Create new message
                 state.messages.push({
                     _id,
                     role: "model",
@@ -42,6 +40,7 @@ const messageSlice = createSlice({
 
         removeMessages: (state) => {
             state.messages = [];
+            state.isLoading = false;
         },
 
         setCurrentChatId: (state, action) => {

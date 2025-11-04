@@ -12,20 +12,16 @@ async function userAuth(req, res, next) {
             })
             return;
         }
-        // console.log("token from userUth", token)
 
         const decodedData = jwt.verify(token, process.env.JWT_SECRET)
         const isBlacklisted = await redis.get(`blacklist:${token}`)
 
-        // console.log("decodedData", decodedData)
-        // console.log("isBlacklisted", isBlacklisted)
         if (isBlacklisted) {
             return res.status(401).json({
                 message: "Unauthorize from redis"
             })
         }
         const redisUser = await redis.get(`user:${decodedData.id}`)
-        // console.log("redisUser", redisUser, decodedData.id)
 
         if (redisUser) {
             req.user = JSON.parse(redisUser)

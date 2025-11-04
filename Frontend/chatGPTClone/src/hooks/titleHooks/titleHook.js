@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { addChatToStore, appendToChatStore } from "../../store/feature/chat/chatSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -9,6 +9,8 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function useGetTitle() {
 
     const dispatch = useDispatch()
+    const currentChats = useSelector((state) => state.chat.chats);
+
     async function getAllChats() {
         const response = await axios.get(
             `${backendUrl}/api/chat/getAllChats`,
@@ -22,11 +24,9 @@ function useGetTitle() {
         queryKey: ["chats"],
         queryFn: getAllChats,
 
-
         onSuccess: (data) => {
-            // console.log(data)
-            dispatch(addChatToStore(data.chat))
-
+            if (!Array.isArray(data?.chat)) return;
+            dispatch(addChatToStore(data.chat));
         },
 
         onError: (err) => {
@@ -37,11 +37,28 @@ function useGetTitle() {
 
     // bcz jab dubara refrsh karta hu  to cache se data nikal ke de raha hai aur vo onSuccess me nahi ata ,
     useEffect(() => {
-        if (data?.chat) {
-            console.log("useEffect called with:", data.chat);
+        if (!Array.isArray(data?.chat)) return;
+
+        if (data.chat.length === 0) {
+            if (currentChats.length !== 0) {
+                dispatch(addChatToStore([]));
+            }
+            return;
+        }
+
+        if (currentChats.length === 0) {
+            dispatch(addChatToStore(data.chat));
+            return;
+        }
+
+        const hasDifferences =
+            currentChats.length !== data.chat.length ||
+            currentChats.some((chat, index) => chat?._id !== data.chat[index]?._id);
+
+        if (hasDifferences) {
             dispatch(addChatToStore(data.chat));
         }
-    }, [data, dispatch]);
+    }, [data, dispatch, currentChats]);
     // console.log("data is ", data && data.chat)
     // if (data) {
     //     // console.log(data.chat)
@@ -75,10 +92,7 @@ function useCreateChat() {
         mutationFn: createChats,
         onSuccess: (data) => {
             dispatch(appendToChatStore(data.chat))
-            console.log("Mutation onSuccess called with:", data.chat);
-            // queryClient.invalidateQueries(['chats']); // refech chats 
-            // queryClient.setQueriesData(['chats'], (old) => [...old, data]);
-            //saving new data in cache 
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
         },
         onError: (error) => {
             console.error("Mutation onError called with:", error);
@@ -86,8 +100,6 @@ function useCreateChat() {
     });
 
     let title = data && data.chat
-
-    console.log("title", title);
 
     return { mutate, title, error, isLoading };
 }

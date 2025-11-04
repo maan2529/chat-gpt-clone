@@ -4,11 +4,16 @@ const cookie = require("cookie");
 const { getAIResponse } = require("../services/ai.service");
 const Message = require('../models/message.model');
 const { v4: uuidv4 } = require('uuid');
+
 function initSocket(httpServer) {
+    // Configure Socket.IO CORS for security
+    const allowedOrigins = process.env.FRONTEND_URL 
+        ? process.env.FRONTEND_URL.split(',') 
+        : ['http://localhost:5173'];
 
     const io = new Server(httpServer, {
         cors: {
-            origin: "*",
+            origin: allowedOrigins,
             methods: ["GET", "POST"],
             credentials: true
         }
@@ -51,10 +56,18 @@ function initSocket(httpServer) {
                 // no need to give message but still giving for testing purpose
                 const messageId = uuidv4();
                 const aiResponse = await getAIResponse(message, (chunksText) => {
-                    
-                    socket.emit("ai-response", { messageId, chunksText })
+                    socket.emit("ai-response", {
+                        messageId,
+                        chatId: message?.chatId,
+                        chunk: chunksText,
+                    })
                 })
-                // console.log('aiResponse', aiResponse)
+
+                socket.emit("ai-response", {
+                    messageId,
+                    chatId: message?.chatId,
+                    done: true,
+                })
 
                 await Message.create({
                     chat: message?.chatId,
@@ -65,8 +78,11 @@ function initSocket(httpServer) {
 
 
             } catch (error) {
-                console.log(error)
-                socket.emit("ai-response", { error: "Something went wrong" })
+                console.error("AI response generation failed:", error);
+                socket.emit("ai-response", {
+                    error: error?.message || "Something went wrong",
+                    chatId: message?.chatId,
+                })
             }
 
         })

@@ -7,11 +7,26 @@ const messageRouter = require('./routes/message.routes');
 const app = express()
 const path = require("path")
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+// Configure CORS for both development and production
+const allowedOrigins = process.env.FRONTEND_URL 
+    ? process.env.FRONTEND_URL.split(',') 
+    : ['http://localhost:5173'];
+
+app.use(cors({ 
+    origin: allowedOrigins,
+    credentials: true 
+}));
 app.use(express.json());
 app.use(cookieParser());
-// app.use(express.static(path.join(__dirname,"../public")))
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+    });
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRouter);
