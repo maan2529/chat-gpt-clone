@@ -2,6 +2,8 @@ const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const redis = require("../db/redis")
+const isProduction = process.env.NODE_ENV === 'production';
+
 
 async function registerUser(req, res) {
 

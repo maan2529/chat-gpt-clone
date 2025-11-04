@@ -18,7 +18,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
-
+app.set('trust proxy', 1);
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({ 
