@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { removeChatFromStore } from "../../store/feature/chat/chatSlice";
 import { removeMessages } from "../../store/feature/message/messageSlice";
 import { clearCache } from "../../utils/chatCache";
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_BACKEND_URL ;
 
 function useLogin() {
     const queryClient = useQueryClient();
