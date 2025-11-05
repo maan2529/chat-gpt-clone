@@ -8,21 +8,21 @@ const app = express()
 const path = require("path")
 
 // Configure CORS for both development and production
-const allowedOrigins = process.env.FRONTEND_URL 
-    ? process.env.FRONTEND_URL.split(',') 
-    : ['http://localhost:5173'];
+const allowedOrigins = process.env.FRONTEND_URL
+    ? process.env.FRONTEND_URL
+    : 'http://localhost:5173';
 
-app.use(cors({ 
+app.use(cors({
     origin: allowedOrigins,
-    credentials: true 
+    credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
 app.set('trust proxy', 1);
 // Health check endpoint
 app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'OK', 
+    res.status(200).json({
+        status: 'OK',
         timestamp: new Date().toISOString(),
         uptime: process.uptime()
     });
