@@ -39,7 +39,14 @@ async function registerUser(req, res) {
         role: user.role
     }, process.env.JWT_SECRET, { expiresIn: '7d' })
 
-    res.cookie("token", token)
+    // In auth.controller.js login function
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        domain: isProduction ? '.vercel.app' : undefined
+    });
 
     res.status(201).json({
         message: "User registered successfully",
@@ -82,7 +89,14 @@ async function loginUser(req, res) {
     }, process.env.JWT_SECRET, { expiresIn: '7d' })
 
     const redisUser = await redis.setex(`user:${user._id}`, 6000, JSON.stringify(user));
-    res.cookie("token", token)
+
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        domain: isProduction ? '.vercel.app' : undefined
+    });
 
 
     res.status(200).json({

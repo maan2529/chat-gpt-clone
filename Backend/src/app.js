@@ -9,8 +9,8 @@ const path = require("path")
 
 // Configure CORS for both development and production
 const allowedOrigins = process.env.FRONTEND_URL
-    ? process.env.FRONTEND_URL
-    : 'http://localhost:5173';
+    ? process.env.FRONTEND_URL.split(',')
+    : ['http://localhost:5174'];
 
 app.use(cors({
     origin: allowedOrigins,

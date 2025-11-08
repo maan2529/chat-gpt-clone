@@ -5,7 +5,7 @@ const redis = require('../../db/redis')
 async function userAuth(req, res, next) {
     try {
         const token = req.cookies?.token;
-
+        console.log("userAuth token ", token)
         if (!token) {
             res.status(401).json({
                 message: "Unauthorize"
@@ -27,7 +27,7 @@ async function userAuth(req, res, next) {
             req.user = JSON.parse(redisUser)
             return next()
         }
-        
+
         const user = await User.findById(decodedData.id)
 
         if (!user) {

@@ -7,8 +7,8 @@ const { v4: uuidv4 } = require('uuid');
 
 function initSocket(httpServer) {
     // Configure Socket.IO CORS for security
-    const allowedOrigins = process.env.FRONTEND_URL 
-        ? process.env.FRONTEND_URL.split(',') 
+    const allowedOrigins = process.env.FRONTEND_URL
+        ? process.env.FRONTEND_URL.split(',')
         : ['http://localhost:5173'];
 
     const io = new Server(httpServer, {
@@ -27,6 +27,7 @@ function initSocket(httpServer) {
 
         const { token } = cookies ? cookie.parse(cookies) : {}  // in objedct format
 
+        console.log("token from socket", token);
 
         if (!token) {
             return next(new Error("not Authenticated"))
