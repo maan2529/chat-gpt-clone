@@ -7,16 +7,16 @@ const { v4: uuidv4 } = require('uuid');
 
 function initSocket(httpServer) {
     // Configure Socket.IO CORS for security
-    const allowedOrigins = process.env.FRONTEND_URL
-        ? process.env.FRONTEND_URL.split(',')
-        : ['http://localhost:5173'];
+    // const allowedOrigins = process.env.FRONTEND_URL
+    //     ? process.env.FRONTEND_URL.split(',')
+    //     : ['http://localhost:5173'];
 
     const io = new Server(httpServer, {
-        cors: {
-            origin: allowedOrigins,
-            methods: ["GET", "POST"],
-            credentials: true
-        }
+        // cors: {
+        //     origin: allowedOrigins,
+        //     methods: ["GET", "POST"],
+        //     credentials: true
+        // }
     })
 
     // adding authentication so only authenticated use can send message 

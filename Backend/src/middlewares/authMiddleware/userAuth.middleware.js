@@ -7,7 +7,7 @@ async function userAuth(req, res, next) {
         const token = req.cookies?.token;
         console.log("userAuth token ", token)
         if (!token) {
-            res.status(401).json({
+            res.status(402).json({
                 message: "Unauthorize"
             })
             return;

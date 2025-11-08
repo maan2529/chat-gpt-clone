@@ -8,17 +8,19 @@ const app = express()
 const path = require("path")
 
 // Configure CORS for both development and production
-const allowedOrigins = process.env.FRONTEND_URL
-    ? process.env.FRONTEND_URL.split(',')
-    : ['http://localhost:5174'];
+// const allowedOrigins = process.env.FRONTEND_URL
+//     ? process.env.FRONTEND_URL.split(',')
+//     : ['http://localhost:5174'];
 
-app.use(cors({
-    origin: allowedOrigins,
-    credentials: true
-}));
+// app.use(cors({
+//     origin: allowedOrigins,
+//     credentials: true
+// }));
 app.use(express.json());
 app.use(cookieParser());
 app.set('trust proxy', 1);
+app.use(express.static(path.join(__dirname, "../public")));
+
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({
@@ -32,8 +34,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRouter);
 app.use('/api/message', messageRouter);
 
-// app.use((req, res) => {
-//   res.sendFile(path.join(__dirname, "../public", "index.html"));
-// });
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "index.html"));
+});
 
 module.exports = app;
